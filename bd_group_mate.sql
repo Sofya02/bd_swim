@@ -201,6 +201,6 @@ INSERT INTO achivment (place) VALUES (3);
 SELECT * FROM achivment;
 DROP TABLE achivment;
 
-DROP DATABASE bd_group_mate;
+
 
 
