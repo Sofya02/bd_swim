@@ -80,7 +80,9 @@ INSERT INTO pool_establishment (name_pool_establishment, address_establishment )
 INSERT INTO pool_establishment (name_pool_establishment, address_establishment ) VALUES ('Бассейн ВГАФК', 'пр. имени В.И. Ленина, 78, Волгоград, Волгоградская обл.');
 INSERT INTO pool_establishment (name_pool_establishment, address_establishment) VALUES ('Олимпия Бассейн', 'ул. 8-й Воздушной Армии, 27 А, Волгоград, Волгоградская обл.');
 
-SELECT * FROM pool_establishment;
+RENAME TABLE `pool_establishment` TO `pool_place`;
+
+SELECT * FROM pool_place;
 
 CREATE TABLE swimming_pool(
 	id_pool INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -89,7 +91,7 @@ CREATE TABLE swimming_pool(
 	track_ INT NOT NULL,
     fk_id_pool_establishment INT NOT NULL,
 	CONSTRAINT FOREIGN KEY (fk_id_pool_establishment)
-        REFERENCES pool_establishment (id_pool_establishment)
+        REFERENCES pool_place (id_pool_establishment)
 );
 
 INSERT INTO swimming_pool (type_sw, length_, track_, fk_id_pool_establishment ) VALUES ('закрытый', 25, 8, 1);
@@ -161,7 +163,7 @@ CREATE TABLE personnel(
     education  VARCHAR (100) NOT NULL,
 	id_pool_establishment_fork INT NOT NULL,
 	CONSTRAINT FOREIGN KEY (id_pool_establishment_fork)
-        REFERENCES pool_establishment (id_pool_establishment)
+        REFERENCES pool_place (id_pool_establishment)
 );
 
 INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, experience, education, id_pool_establishment_fork) VALUES ('Иваонов', 'Иван', 'Иванович', '1960-01-22','тренер',7, 'высшее',1);
@@ -177,9 +179,12 @@ SELECT * FROM employee;
 
 CREATE TABLE achivment(
 	id_achivment INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    last_name VARCHAR (100) NOT NULL,
     place INT NOT NULL
 );
+INSERT INTO achivment (place) VALUES (1);
+INSERT INTO achivment (place) VALUES (2);
+INSERT INTO achivment (place) VALUES (3);
+
 SELECT * FROM achivment;
 DROP TABLE achivment;
 
