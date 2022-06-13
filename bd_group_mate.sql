@@ -9,12 +9,11 @@ CREATE TABLE swimmers(
 	birthday DATE NOT NULL
 );
 
-ALTER TABLE swimmers
-DROP PRIMARY KEY,
+ALTER TABLE swimmers DROP PRIMARY KEY,
 ADD PRIMARY KEY(id_swimmer);
 
-ALTER TABLE swimmers
-ADD  male  varchar(50);
+ALTER TABLE swimmers ADD  male  varchar(50);
+ALTER TABLE swimmers DROP COLUMN male;
 
 INSERT INTO swimmers (last_name, first_name, patronymic, birthday) VALUES ('Синицын', 'Иван', 'Иванович', '1999-03-20');
 INSERT INTO swimmers (last_name, first_name, patronymic, birthday) VALUES ('Карпин', 'Николай', 'Сергеевич', '2001-02-11');
@@ -32,16 +31,15 @@ CREATE TABLE coaches(
     education  VARCHAR (100) NOT NULL
 );
 
-ALTER TABLE coaches
-DROP PRIMARY KEY,
+ALTER TABLE coaches DROP PRIMARY KEY,
 ADD PRIMARY KEY(id_coach);
 
 INSERT INTO coaches (last_name, first_name, patronymic, birthday, experience, education) VALUES ('Капица', 'Илья', 'Иванович', '1985-01-01',7, 'высшее');
 INSERT INTO coaches (last_name, first_name, patronymic, birthday, experience, education) VALUES ('Володин', 'Дмитрий', 'Сергеевич', '1968-03-20',20,'высшее');
 INSERT INTO coaches (last_name, first_name, patronymic, birthday, experience, education) VALUES ('Мишустин', 'Михаил', 'Петрович', '1979-09-23', 15,'высшее');
 
-ALTER TABLE coaches
-ADD  male  varchar(50);
+ALTER TABLE coaches ADD  male  varchar(50);
+ALTER TABLE  coaches DROP COLUMN male;
 
 SELECT * FROM coaches;
 
@@ -49,14 +47,15 @@ CREATE TABLE morbus(
 	id_morbus INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name_trauma VARCHAR (100) NOT NULL,
     chronic_disease VARCHAR (100) NOT NULL,
-    id_swimmer_fk INT NOT NULL,
-	CONSTRAINT FOREIGN KEY (id_swimmer_fk)
-        REFERENCES swimmers (id_swimmer)
+    id_swimmer_fk INT NOT NULL
+
 );
 
-ALTER TABLE morbus
-DROP PRIMARY KEY,
+ALTER TABLE morbus DROP PRIMARY KEY,
 ADD PRIMARY KEY(id_morbus);
+
+ALTER TABLE morbus ADD CONSTRAINT id_swimmer_fk
+FOREIGN KEY(id_swimmer_fk) REFERENCES swimmers(id_swimmer);
 
 INSERT INTO morbus (name_trauma, chronic_disease, id_swimmer_fk ) VALUES ('не обнаружено', 'не обнаружено', 1);
 INSERT INTO morbus (name_trauma, chronic_disease, id_swimmer_fk ) VALUES ('травма колена', 'не обнаружено', 2);
@@ -182,8 +181,8 @@ INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, 
 INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, experience, education, id_pool_establishment_fork) VALUES ('Шульгин', 'Анатолий', 'Валерьевич', '1956-12-20','уборщик',21,'высшее',2);
 INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, experience, education, id_pool_establishment_fork) VALUES ('Проскофьев', 'Михаил', 'Петрович', '1967-11-12','охранник', 15,'высшее',3);
 
-ALTER TABLE personnel
-ADD  male  varchar(50);
+ALTER TABLE personnel ADD  male  varchar(50);
+ALTER TABLE personnel DROP COLUMN male;
 
 RENAME TABLE `personnel` TO `employee`;
 
