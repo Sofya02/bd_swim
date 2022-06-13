@@ -100,10 +100,11 @@ CREATE TABLE swimming_pool(
     type_sw VARCHAR (100) NOT NULL,
     length_ INT NOT NULL,
 	track_ INT NOT NULL,
-    fk_id_pool_establishment INT NOT NULL,
-	CONSTRAINT FOREIGN KEY (fk_id_pool_establishment)
-        REFERENCES pool_place (id_pool_establishment)
+    fk_id_pool_establishment INT NOT NULL
 );
+
+ALTER TABLE swimming_pool ADD CONSTRAINT fk_id_pool_establishment
+FOREIGN KEY(fk_id_pool_establishment) REFERENCES pool_place(id_pool_establishment);
 
 INSERT INTO swimming_pool (type_sw, length_, track_, fk_id_pool_establishment ) VALUES ('закрытый', 25, 8, 1);
 INSERT INTO swimming_pool (type_sw, length_, track_, fk_id_pool_establishment ) VALUES ('закрытый', 50, 4, 2);
@@ -118,10 +119,11 @@ CREATE TABLE lesson_plan(
     id_coach_foreingkey INT NOT NULL,
 	CONSTRAINT FOREIGN KEY (id_coach_foreingkey)
         REFERENCES coaches (id_coach),
-	id_pool_forkey INT NOT NULL,
-	CONSTRAINT FOREIGN KEY (id_pool_forkey)
-        REFERENCES swimming_pool (id_pool)
+	id_pool_forkey INT NOT NULL
 );
+
+ALTER TABLE lesson_plan ADD CONSTRAINT id_pool_forkey
+FOREIGN KEY(id_pool_forkey) REFERENCES swimming_pool(id_pool);
 
 INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-31',' 11:00', 1,2);
 INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-21',' 11:00', 1,2);
