@@ -1,0 +1,363 @@
+CREATE DATABASE sh_st;
+USE `sh_st` ;
+
+CREATE TABLE goods (
+  id_goods INT NOT NULL AUTO_INCREMENT,
+  name_goods VARCHAR(45) NOT NULL,
+  goods_type VARCHAR(45) NOT NULL,
+  brand VARCHAR(45) NOT NULL,
+  receipt_date DATE NOT NULL,
+  price FLOAT NOT NULL,
+  PRIMARY KEY (id_goods)
+  );
+
+CREATE TABLE purveyor (
+  id_purveyor INT NOT NULL AUTO_INCREMENT,
+  name_purveyor VARCHAR(45) NOT NULL,
+  address_purveyor VARCHAR(45) NOT NULL,
+  contact_person_purveyor INT NOT NULL,
+  PRIMARY KEY (id_purveyor)
+  );
+
+CREATE TABLE shoe_store (
+  id_shoe_store INT NOT NULL AUTO_INCREMENT,
+  name_shoe_store VARCHAR(45) NOT NULL,
+  address_shoe_store VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id_shoe_store)
+  );
+
+CREATE TABLE storage_ (
+  id_storage INT NOT NULL AUTO_INCREMENT,
+  capacity INT NOT NULL,
+  id_shoe_store INT NOT NULL,
+  PRIMARY KEY (id_storage),
+  CONSTRAINT FOREIGN KEY (id_shoe_store)
+    REFERENCES shoe_store (id_shoe_store)
+    );
+
+CREATE TABLE purveyor_storage_goods (
+  id_purveyor_storage_goods INT NOT NULL AUTO_INCREMENT,
+  count INT NOT NULL,
+  data_ DATE NOT NULL,
+  id_purveyor_foreing_key INT NOT NULL,
+  id_storage_foreing_key INT NOT NULL,
+  id_goods_foreing_key INT NOT NULL,
+  PRIMARY KEY (`id_purveyor_storage_goods`),
+  CONSTRAINT `id_purveyor_foreing_key`
+    FOREIGN KEY (`id_purveyor_foreing_key`)
+    REFERENCES purveyor(`id_purveyor`),
+  CONSTRAINT `id_storage_foreing_key`
+    FOREIGN KEY (`id_storage_foreing_key`)
+    REFERENCES storage_(`id_storage`),
+  CONSTRAINT `id_goods_foreing_key`
+    FOREIGN KEY (`id_goods_foreing_key`)
+    REFERENCES goods(`id_goods`)
+
+    );
+
+CREATE TABLE department(
+  id_department INT NOT NULL AUTO_INCREMENT,
+  name_department VARCHAR(45) NOT NULL,
+  fk_id_shoe_store INT NOT NULL,
+  PRIMARY KEY (id_department),
+  CONSTRAINT fk_id_shoe_store
+    FOREIGN KEY (fk_id_shoe_store)
+    REFERENCES shoe_store(id_shoe_store)
+    );
+
+CREATE TABLE department_goods (
+  count INT NOT NULL,
+  fk_id_department INT NOT NULL,
+  fk_id_goods INT NOT NULL,
+  PRIMARY KEY (fk_id_department, fk_id_goods),
+  CONSTRAINT fk_id_department
+    FOREIGN KEY (fk_id_department)
+    REFERENCES department(id_department),
+  CONSTRAINT fk_id_goods
+    FOREIGN KEY (fk_id_goods)
+    REFERENCES goods(id_goods)
+    );
+
+CREATE TABLE working_mode (
+  id_working_mode INT NOT NULL AUTO_INCREMENT,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  days_of_the_week VARCHAR(45) NOT NULL,
+  forkey_id_shoe_store INT NOT NULL,
+  PRIMARY KEY (id_working_mode),
+  CONSTRAINT forkeyid_shoe_store
+    FOREIGN KEY (forkey_id_shoe_store)
+    REFERENCES shoe_store(id_shoe_store)
+    );
+
+CREATE TABLE staff(
+  id_staff INT NOT NULL AUTO_INCREMENT,
+  post VARCHAR(45) NOT NULL,
+  standing INT NOT NULL,
+  full_name VARCHAR(45) NOT NULL,
+  wage FLOAT NOT NULL,
+  fore_id_department INT NOT NULL,
+  PRIMARY KEY (id_staff),
+  CONSTRAINT fore_id_department
+    FOREIGN KEY (fore_id_department)
+    REFERENCES department(id_department)
+    );
+    
+CREATE TABLE customer (
+  id_customer INT NOT NULL AUTO_INCREMENT,
+  full_name VARCHAR(45) NOT NULL,
+  residential_address VARCHAR(250) NOT NULL,
+  phone_number INT NOT NULL,
+  email VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id_customer)
+  );
+
+CREATE TABLE order_ (
+  id_order INT NOT NULL AUTO_INCREMENT,
+  delivery_address VARCHAR(45) NOT NULL,
+  order_date DATE NOT NULL,
+  id_customer INT NOT NULL,
+  id_staff INT NOT NULL,
+  PRIMARY KEY (id_order),
+  CONSTRAINT id_customer
+    FOREIGN KEY (id_customer)
+    REFERENCES customer(id_customer),
+  CONSTRAINT id_staff
+    FOREIGN KEY (id_staff)
+    REFERENCES staff(id_staff)
+    );
+
+CREATE TABLE goods_order (
+  fk_id_goods_ INT NOT NULL,
+  fk_id_order_ INT NOT NULL,
+  count INT NOT NULL,
+  PRIMARY KEY (fk_id_goods_, fk_id_order_),
+  CONSTRAINT foreign_id_goods_
+    FOREIGN KEY (fk_id_goods_)
+    REFERENCES goods(id_goods),
+  CONSTRAINT foreign_id_order_
+    FOREIGN KEY (fk_id_order_)
+    REFERENCES order_(id_order)
+    );
+
+CREATE TABLE goods_return (
+  return_data DATE NOT NULL,
+  cause VARCHAR(45) NOT NULL,
+  id_order INT NOT NULL,
+  PRIMARY KEY (id_order),
+  CONSTRAINT id_ordeer
+    FOREIGN KEY (id_order)
+    REFERENCES order_(id_order)
+    );
+
+CREATE TABLE comment_(
+  id_comment INT NOT NULL AUTO_INCREMENT,
+  grade INT NOT NULL,
+  text_ VARCHAR(45) NOT NULL,
+  foreign_key_id_customer INT NOT NULL,
+  foreign_key_id_goods INT NOT NULL,
+  PRIMARY KEY (id_comment),
+  CONSTRAINT foreign_key_id_customer
+    FOREIGN KEY (foreign_key_id_customer)
+    REFERENCES customer(id_customer),
+  CONSTRAINT foreign_key_id_goods
+    FOREIGN KEY (foreign_key_id_goods)
+    REFERENCES goods(id_goods)
+    );
+
+CREATE TABLE goods_characteristics (
+  id_goods_characteristics INT NOT NULL AUTO_INCREMENT,
+  name_ VARCHAR(45) NOT NULL,
+  PRIMARY KEY (id_goods_characteristics)
+  );
+
+CREATE TABLE value_characteristics_goods (
+  id_value_characteristics_goods INT NOT NULL AUTO_INCREMENT,
+  name_ VARCHAR(45) NOT NULL,
+  id_goods_characteristics INT NOT NULL,
+  PRIMARY KEY (id_value_characteristics_goods),
+  CONSTRAINT id_goods_characteristics
+    FOREIGN KEY (id_goods_characteristics)
+    REFERENCES goods_characteristics(id_goods_characteristics)
+    );
+
+CREATE TABLE value_goods (
+  id_fk_goods INT NOT NULL,
+  id_fk_value_characteristicks INT NOT NULL,
+  PRIMARY KEY (id_fk_goods, id_fk_value_characteristicks),
+  CONSTRAINT id_fk_goods
+    FOREIGN KEY (id_fk_goods)
+    REFERENCES goods(id_goods),
+  CONSTRAINT id_fk_value_characteristicks
+    FOREIGN KEY (id_fk_value_characteristicks)
+    REFERENCES value_characteristics_goods(id_value_characteristics_goods)
+    );
+
+CREATE TABLE promotion (
+  id_promotion INT NOT NULL AUTO_INCREMENT,
+  amount_of_discount INT NOT NULL,
+  goods_category VARCHAR(45) NOT NULL,
+  time_of_action DATE NOT NULL,
+  PRIMARY KEY (id_promotion)
+  );
+
+CREATE TABLE goods_promotion(
+  id_goods_fkl INT NOT NULL,
+  id_promotion_fkl INT NOT NULL,
+  PRIMARY KEY (id_goods_fkl, id_promotion_fkl),
+  CONSTRAINT id_goods_fkl
+    FOREIGN KEY (id_goods_fkl)
+    REFERENCES goods(id_goods),
+  CONSTRAINT id_promotion_fkl
+    FOREIGN KEY (id_promotion_fkl)
+    REFERENCES promotion(id_promotion)
+    );
+
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Бейсболка Embroidered', 'Аксессуары', 'Addidas', '12.01.2022', 1399);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Nike Court Vision Alta', 'Женская обувь', 'Nike', '09.02.2022', 8499);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Japan S PF', 'Женская обувь', 'Asics', '12.12.2021', 9190);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Levitate StealthFlt 5', 'Мужская обувь', 'Brooks', '10.03.2022', 14349);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кроссовки женские Puma Flyer Flex', 'Женская обувь', 'Puma', '13.11.2021', 6499);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кроссовки женские Demix Nova MID WTR W', 'Женская обувь', 'Demix', '19.04.2022', 8499);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Женские носки Nike Everyday Lightweight', 'Аксессуары', 'Nike', '12.01.2021', 1299);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кеды мужские Termit Invader 2.0 Low M', 'Мужская обувь', 'Termit', '23.03.2022', 6499);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кеды мужские Adidas Hoops 3.0 Mid', 'Мужская обувь', 'Adidas', '02.05.2022', 8399);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Солнцезащитные очки', 'Аксессуары', 'Kappa', '06.04.2022', 2499);
+
+INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('@power', 'ул.Свиридова 11, 85');
+INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('Skill', 'ул.Камышинская 29, 34');
+
+REPLACE INTO storage_(capacity, id_shoe_store) VALUES (100, 1);
+REPLACE INTO storage_(capacity, id_shoe_store) VALUES (250, 2);
+
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (100, '12.12.2020', 1, 1, 1);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (160, '12.12.2020', 2, 1, 2);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (31, '12.12.2020', 2, 2, 3);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (165, '12.12.2020', 3, 2, 4);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (100, '12.12.2020', 1, 1, 5);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (160, '12.12.2020', 2, 1, 6);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (31, '12.12.2020', 2, 2, 7);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (165, '12.12.2020', 3, 2, 8);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (31, '12.12.2020', 2, 2, 9);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (165, '12.12.2020', 3, 2, 10);
+
+INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Головные уборы', 1);
+INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Женская обувь', 2);
+INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Мужская обувь', 2);
+
+INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('10.00', '20.30', 'Понедельник', 1);
+INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('10.00', '20.30', 'Среда ', 1);
+INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('10.00', '20.30', 'Пятница', 1);
+INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('8.00', '18.00', 'Вторник', 2);
+INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('8.00', '18.00', 'Четверг', 2);
+INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('8.00', '18.00', 'Суббота', 2);
+
+INSERT INTO staff(post, standing, full_name, wage, fore_id_department) VALUES ('1,5 года', продавец-консультант, 'Петрова Дарья Васильевна', 25000, 500);
+INSERT INTO staff(post, standing,full_name,wage, fore_id_department) VALUES ('3  года', продавец, 'Иванов Иван Иванович', 50000, 501);
+
+INSERT INTO customer(full_name, residential_address, phone_number, email) VALUES ('Уваров Константин Дмитриевич', '161288, г.Волгоград,ул.Гвардейская 45,10в', 894567863245, 'uvar1984@mail.ru');
+INSERT INTO customer(full_name, residential_address, phone_number, email) VALUES ('Макарова Светлана Игоревна', '678321, г.Волгоград, ул.Титова 96,53г', 89037398431, 'sveta_mak@gmail.com');
+INSERT INTO customer(full_name, residential_address, phone_number, email) VALUES ('Иванов Иван Иванович', '563221, г.Волгоград, ул. Ломоносова 14,38а', 89456849120, 'ivanka_vol@yandex.ru');
+
+INSERT INTO order_(delivery_address, order_date, id_customer, id_staff) VALUES ('г.Волгоград, ул.Титова 96,53г', '01.02.2022', 1, 1);
+INSERT INTO order_(delivery_address, order_date, id_customer, id_staff) VALUES ('г.Волгоград, ул Калинина 21', '16.03.2022', 2, 2);
+INSERT INTO order_(delivery_address, order_date, id_customer, id_staff) VALUES ('г.Волгоград, ул.ЛОмоносова 14,38а', '20.03.2022', 3, 2);
+
+INSERT INTO goods_order(fk_id_goods_, fk_id_order_, count) VALUES (1, 1, 1);
+INSERT INTO goods_order(fk_id_goods_, fk_id_order_, count) VALUES (2, 2, 1);
+INSERT INTO goods_order(fk_id_goods_, fk_id_order_, count) VALUES (3, 3, 1);
+
+INSERT INTO goods_return(return_data, cause, id_order) VALUES ('10.03.2022', 'разошлись швы', 1);
+INSERT INTO goods_return(return_data, cause, id_order) VALUES ('09.03.2022', 'неправильный товар', 2);
+
+INSERT INTO goods_promotion(id_goods_fkl, id_promotion_fkl) VALUES (1, 1);
+INSERT INTO goods_promotion(id_goods_fkl, id_promotion_fkl) VALUES (2, 2);
+INSERT INTO goods_promotion(id_goods_fkl, id_promotion_fkl) VALUES (3, 3);
+INSERT INTO goods_promotion(id_goods_fkl, id_promotion_fkl) VALUES (4, 4);
+
+INSERT INTO comment_(text_, foreign_key_id_customer, foreign_key_id_goods) VALUES ('отличный качество', 1, 1);
+INSERT INTO comment_(text_, foreign_key_id_customer, foreign_key_id_goods) VALUES ('поставлю 5 баллов', 3, 3);
+
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (1, 1, 1);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (2, 2, 2);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (5, 3, 4);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (1, 2, 3);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (20, 1, 10);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (13, 2, 5);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (3, 2, 6);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (11, 3, 8);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (2, 1, 7);
+INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (7, 3, 9);
+
+INSERT INTO promotion(amount_of_discount, goods_category, time_of_action) VALUES (15, 'головные уборы', '13.11.2021');
+INSERT INTO promotion(amount_of_discount, goods_category, time_of_action) VALUES (10, 'обувь', '15.01.2022');
+
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Addidas', 'головные уборы', 89614223654);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Nike', 'головные уборы', 89432223654);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Demix', 'головные уборы', 89614223604);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Termit', 'головные уборы', 89614209854);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Puma', 'головные уборы', 89614765454);
+
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (1, 1);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (2, 2);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (3, 3);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (4, 4);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (5, 5);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (6, 6);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (7, 7);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (8, 8);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (9, 9);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (10, 10);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (1, 11);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (2, 12);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (3, 13);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (4, 14);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (5, 15);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (6, 16);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (7, 17);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (8, 18);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (9, 19);
+INSERT INTO value_goods(id_fk_goods, id_fk_value_characteristicks) VALUES (10, 20);
+
+INSERT INTO goods_characteristics(id_goods_characteristics, name_) VALUES (1, 'цвет');
+INSERT INTO goods_characteristics(id_goods_characteristics, name_) VALUES (2, 'размер');
+
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (1, 'синий', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (2, 'белый', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (3, 'серый', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (4, 'розовый', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (5, 'черный', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (6, 'желтый', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (7, 'фиолетовый', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (8, 'зеленый', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (9,'красный', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (10, 'синий', 1);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (11, '53', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (12, '39', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (13, '37', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (14, '42', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (15, '39', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (16, '44', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (17, '39', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (18, '43', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (19, '44', 2);
+INSERT INTO value_characteristics_goods(id_value_characteristics_goods, name_, id_goods_characteristics) VALUES (20, 'no', 2);
+
+SELECT * FROM goods;
+SELECT * FROM shoe_store;
+SELECT * FROM storage_;
+SELECT * FROM purveyor_storage_goods;
+SELECT * FROM department;
+SELECT * FROM working_mode;
+SELECT * FROM customer;
+SELECT * FROM order_;
+SELECT * FROM goods_order;
+SELECT * FROM goods_return;
+SELECT * FROM goods_promotion;
+SELECT * FROM comment_;
+SELECT * FROM department_goods;
+SELECT * FROM promotion;
+SELECT * FROM purveyor;
+SELECT * FROM value_goods;
+SELECT * FROM goods_characteristics;
+SELECT * FROM value_characteristics_goods;
