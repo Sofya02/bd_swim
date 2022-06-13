@@ -1,0 +1,205 @@
+CREATE DATABASE bd_group_mate;
+
+USE bd_group_mate;
+CREATE TABLE swimmers(
+	id_swimmer INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    last_name VARCHAR (100) NOT NULL,
+    first_name VARCHAR (100) NOT NULL,
+    patronymic VARCHAR (100) NOT NULL,
+	birthday DATE NOT NULL
+);
+
+ALTER TABLE swimmers
+DROP PRIMARY KEY,
+ADD PRIMARY KEY(id_swimmer);
+
+ALTER TABLE swimmers
+ADD  male  varchar(50);
+
+INSERT INTO swimmers (last_name, first_name, patronymic, birthday) VALUES ('Синицын', 'Иван', 'Иванович', '1999-03-20');
+INSERT INTO swimmers (last_name, first_name, patronymic, birthday) VALUES ('Карпин', 'Николай', 'Сергеевич', '2001-02-11');
+INSERT INTO swimmers (last_name, first_name, patronymic, birthday) VALUES ('Быстров', 'Петр', 'Анатольевич', '2000-12-12');
+
+SELECT * FROM swimmers;
+
+CREATE TABLE coaches(
+	id_coach INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    last_name VARCHAR (100) NOT NULL,
+    first_name VARCHAR (100) NOT NULL,
+	patronymic VARCHAR (100) NOT NULL,
+	birthday DATE NOT NULL,
+    experience INT  NOT NULL,
+    education  VARCHAR (100) NOT NULL
+);
+
+ALTER TABLE coaches
+DROP PRIMARY KEY,
+ADD PRIMARY KEY(id_coach);
+
+INSERT INTO coaches (last_name, first_name, patronymic, birthday, experience, education) VALUES ('Капица', 'Илья', 'Иванович', '1985-01-01',7, 'высшее');
+INSERT INTO coaches (last_name, first_name, patronymic, birthday, experience, education) VALUES ('Володин', 'Дмитрий', 'Сергеевич', '1968-03-20',20,'высшее');
+INSERT INTO coaches (last_name, first_name, patronymic, birthday, experience, education) VALUES ('Мишустин', 'Михаил', 'Петрович', '1979-09-23', 15,'высшее');
+
+ALTER TABLE coaches
+ADD  male  varchar(50);
+
+SELECT * FROM coaches;
+
+CREATE TABLE morbus(
+	id_morbus INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name_trauma VARCHAR (100) NOT NULL,
+    chronic_disease VARCHAR (100) NOT NULL,
+    id_swimmer_fk INT NOT NULL,
+	CONSTRAINT FOREIGN KEY (id_swimmer_fk)
+        REFERENCES swimmers (id_swimmer)
+);
+
+ALTER TABLE morbus
+DROP PRIMARY KEY,
+ADD PRIMARY KEY(id_morbus);
+
+INSERT INTO morbus (name_trauma, chronic_disease, id_swimmer_fk ) VALUES ('не обнаружено', 'не обнаружено', 1);
+INSERT INTO morbus (name_trauma, chronic_disease, id_swimmer_fk ) VALUES ('травма колена', 'не обнаружено', 2);
+INSERT INTO morbus (name_trauma, chronic_disease, id_swimmer_fk ) VALUES ('не обнаружено', 'не обнаружено', 3);
+
+RENAME TABLE `morbus` TO `disease`;
+
+SELECT * FROM disease;
+
+CREATE TABLE swimmers_to_coaches(
+	foreign_key_id_swimmer INT NOT NULL,
+    fk_id_coach INT NOT NULL,
+    PRIMARY KEY (foreign_key_id_swimmer ,  fk_id_coach),
+    CONSTRAINT FOREIGN KEY (foreign_key_id_swimmer)
+        REFERENCES swimmers (id_swimmer),
+    CONSTRAINT FOREIGN KEY (fk_id_coach)
+        REFERENCES coaches (id_coach)
+);
+
+INSERT INTO swimmers_to_coaches (foreign_key_id_swimmer, fk_id_coach ) VALUES (1, 1);
+INSERT INTO swimmers_to_coaches (foreign_key_id_swimmer, fk_id_coach ) VALUES (2, 2);
+INSERT INTO swimmers_to_coaches (foreign_key_id_swimmer, fk_id_coach) VALUES (3, 3);
+
+SELECT * FROM swimmers_to_coaches;
+
+CREATE TABLE pool_establishment(
+	id_pool_establishment INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name_pool_establishment VARCHAR (100) NOT NULL,
+    address_establishment VARCHAR (250) NOT NULL
+);
+
+INSERT INTO pool_establishment (name_pool_establishment, address_establishment ) VALUES ('Спорт-тайм', 'Пугачевская ул., 7Г, Волгоград, Волгоградская обл.');
+INSERT INTO pool_establishment (name_pool_establishment, address_establishment ) VALUES ('Бассейн ВГАФК', 'пр. имени В.И. Ленина, 78, Волгоград, Волгоградская обл.');
+INSERT INTO pool_establishment (name_pool_establishment, address_establishment) VALUES ('Олимпия Бассейн', 'ул. 8-й Воздушной Армии, 27 А, Волгоград, Волгоградская обл.');
+
+RENAME TABLE `pool_establishment` TO `pool_place`;
+
+SELECT * FROM pool_place;
+
+CREATE TABLE swimming_pool(
+	id_pool INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    type_sw VARCHAR (100) NOT NULL,
+    length_ INT NOT NULL,
+	track_ INT NOT NULL,
+    fk_id_pool_establishment INT NOT NULL,
+	CONSTRAINT FOREIGN KEY (fk_id_pool_establishment)
+        REFERENCES pool_place (id_pool_establishment)
+);
+
+INSERT INTO swimming_pool (type_sw, length_, track_, fk_id_pool_establishment ) VALUES ('закрытый', 25, 8, 1);
+INSERT INTO swimming_pool (type_sw, length_, track_, fk_id_pool_establishment ) VALUES ('закрытый', 50, 4, 2);
+INSERT INTO swimming_pool (type_sw, length_, track_, fk_id_pool_establishment ) VALUES ('открытый', 20, 4, 3);
+
+SELECT * FROM swimming_pool;
+
+CREATE TABLE lesson_plan(
+	id_lesson INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    data_ DATE NOT NULL,
+    time_ TIME NOT NULL,
+    id_coach_foreingkey INT NOT NULL,
+	CONSTRAINT FOREIGN KEY (id_coach_foreingkey)
+        REFERENCES coaches (id_coach),
+	id_pool_forkey INT NOT NULL,
+	CONSTRAINT FOREIGN KEY (id_pool_forkey)
+        REFERENCES swimming_pool (id_pool)
+);
+
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-31',' 11:00', 1,2);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-21',' 11:00', 1,2);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-15','11:00', 1,2);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-31',' 13:00', 2,1);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-21',' 13:00', 2,2);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-15',' 13:00', 2,3);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-31',' 17:00', 3,2);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-21',' 17:00', 3,2);
+INSERT INTO lesson_plan (data_, time_, id_coach_foreingkey, id_pool_forkey) VALUES ('2022-05-15',' 17:00', 3,3);
+
+SELECT * FROM lesson_plan;
+
+CREATE TABLE exercise(
+	id_exercise INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    task VARCHAR (250) NOT NULL,
+    technic VARCHAR (250) NOT NULL
+);
+
+INSERT INTO exercise (task, technic) VALUES ('тренировка на скорость','Брасс');
+INSERT INTO exercise (task, technic) VALUES ('тренировка на выносливость','Баттерфляй');
+INSERT INTO exercise (task, technic) VALUES ('тренировка для заплыва на короткие дистанции','Кроль на груди');
+
+SELECT * FROM exercise;
+
+CREATE TABLE lesson_plan_to_exercise(
+	 fok_id_lesson INT NOT NULL,
+	 fk_id_exercise INT NOT NULL,
+     PRIMARY KEY (fok_id_lesson ,  fk_id_exercise),
+	CONSTRAINT FOREIGN KEY (fok_id_lesson)
+        REFERENCES lesson_plan (id_lesson),
+	CONSTRAINT FOREIGN KEY (fk_id_exercise)
+        REFERENCES exercise (id_exercise)
+);
+
+INSERT INTO lesson_plan_to_exercise (fok_id_lesson , fk_id_exercise) VALUES (1,1);
+INSERT INTO lesson_plan_to_exercise (fok_id_lesson , fk_id_exercise) VALUES (2,2);
+INSERT INTO lesson_plan_to_exercise (fok_id_lesson , fk_id_exercise) VALUES (3,3);
+
+SELECT * FROM lesson_plan_to_exercise;
+
+CREATE TABLE personnel(
+	id_personnel INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    last_name VARCHAR (100) NOT NULL,
+    first_name VARCHAR (100) NOT NULL,
+    patronymic VARCHAR (100) NOT NULL,
+	birthday DATE NOT NULL,
+    profession VARCHAR (100) NOT NULL,
+	experience INT  NOT NULL,
+    education  VARCHAR (100) NOT NULL,
+	id_pool_establishment_fork INT NOT NULL,
+	CONSTRAINT FOREIGN KEY (id_pool_establishment_fork)
+        REFERENCES pool_place (id_pool_establishment)
+);
+
+INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, experience, education, id_pool_establishment_fork) VALUES ('Иваонов', 'Иван', 'Иванович', '1960-01-22','тренер',7, 'высшее',1);
+INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, experience, education, id_pool_establishment_fork) VALUES ('Шульгин', 'Анатолий', 'Валерьевич', '1956-12-20','уборщик',21,'высшее',2);
+INSERT INTO personnel (last_name, first_name, patronymic, birthday, profession, experience, education, id_pool_establishment_fork) VALUES ('Проскофьев', 'Михаил', 'Петрович', '1967-11-12','охранник', 15,'высшее',3);
+
+ALTER TABLE personnel
+ADD  male  varchar(50);
+
+RENAME TABLE `personnel` TO `employee`;
+
+SELECT * FROM employee;
+
+CREATE TABLE achivment(
+	id_achivment INT  NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    place INT NOT NULL
+);
+INSERT INTO achivment (place) VALUES (1);
+INSERT INTO achivment (place) VALUES (2);
+INSERT INTO achivment (place) VALUES (3);
+
+SELECT * FROM achivment;
+DROP TABLE achivment;
+
+DROP DATABASE bd_group_mate;
+
+
