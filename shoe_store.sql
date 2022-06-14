@@ -21,36 +21,57 @@ INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('�
 INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кеды мужские Termit Invader 2.0 Low M', 'Мужская обувь', 'Termit', '2022-03-23', 6499);
 INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кеды мужские Adidas Hoops 3.0 Mid', 'Мужская обувь', 'Adidas', '2022-05-02', 8399);
 INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Солнцезащитные очки', 'Аксессуары', 'Kappa', '2022-04-06', 2499);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Солнцезащитные очки', 'Аксессуары', 'Kappa', '2022-01-06', 2499);
+INSERT INTO goods(name_goods, goods_type, brand, receipt_date, price) VALUES ('Кроссовки женские Puma Flyer Flex', 'ул. Рабоче-Крестьянская', 'Kappa', '2022-01-06', 0000);
+
+/*Обновить значение переменоой brand*/
+UPDATE goods  SET brand = 'Addidas' WHERE id_goods =11;
+DELETE FROM goods WHERE id_goods=12;
 
 SELECT * FROM goods;
+
+/*Сортировка по дате покупке(от старых к новым)*/
+SELECT * FROM goods ORDER BY receipt_date;
+/*Сортировка по цене(от меньшего к большему)*/
+SELECT * FROM goods ORDER BY price;
+
 
 CREATE TABLE purveyor (
   id_purveyor INT NOT NULL AUTO_INCREMENT,
   name_purveyor VARCHAR(45) NOT NULL,
-  address_purveyor VARCHAR(45) NOT NULL,
+  address_purveyor VARCHAR(250) NOT NULL,
   contact_person_purveyor BIGINT(11) NOT NULL,
   PRIMARY KEY (id_purveyor)
   );
   
-INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Addidas', 'головные уборы', 89614223654);
-INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Nike', 'головные уборы', 89432223654);
-INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Demix', 'головные уборы', 89614223604);
-INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Termit', 'головные уборы', 89614209854);
-INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Puma', 'головные уборы', 89614765454);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Adidas', 'ул. им. Землячки, 110Б, Волгоград, Волгоградская обл., 400117', 89614223654);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Nike', 'ул. Таращанцев, 3, Волгоград, Волгоградская обл., 400007', 89432223654);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Demix', 'ул. Вавилова, 3, Москва, 119334', 89614223604);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Termit', 'пер. Первомайский, 136, Кущевская, Краснодарский край, 352030', 89614209854);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('Puma', 'просп. Университетский, 107, Волгоград, Волгоградская обл., 400062', 89614765454);
+INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) VALUES ('New Balence', 'ул. 8-й Воздушной Армии, 28А, Волгоград, Волгоградская обл., 400137', 89614765454);
+
+/*Обновить значение переменной(исправление опечатки)*/
+UPDATE purveyor  SET name_purveyor = 'New Balance' WHERE id_purveyor =6;
 
 SELECT * FROM purveyor;
 
 CREATE TABLE shoe_store (
   id_shoe_store INT NOT NULL AUTO_INCREMENT,
   name_shoe_store VARCHAR(45) NOT NULL,
-  address_shoe_store VARCHAR(45) NOT NULL,
+  address_shoe_store VARCHAR(250) NOT NULL,
   PRIMARY KEY (id_shoe_store)
   );
   
-INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('@power', 'ул.Свиридова 11, 85');
-INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('Skill', 'ул.Камышинская 29, 34');
+INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('@power', 'ул.Свиридова 11, 85, Волгоград, Волгоградская обл., 400238');
+INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('Skill', 'ул.Камышинская 29, 34, Волгоград, Волгоградская обл., 400338');
+INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('GoldCross', 'ул.Камышинская 29, 34, Волгоград, Волгоградская обл., 400338');
+
+/*Обновить значение переменной(исправление опечатки)*/
+UPDATE shoe_store  SET address_shoe_store = 'ул. им. Землячки, 110Б, Волгоград, Волгоградская обл., 400138' WHERE id_shoe_store =3;
 
 SELECT * FROM shoe_store;
+
 
 CREATE TABLE storage_ (
   id_storage INT NOT NULL AUTO_INCREMENT,
@@ -95,6 +116,9 @@ INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_sto
 INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (165, '2020-12-12', 3, 2, 8);
 INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (31, '2020-12-12', 2, 2, 9);
 INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (165, '2020-12-12', 3, 2, 10);
+INSERT INTO purveyor_storage_goods(count, data_, id_purveyor_foreing_key, id_storage_foreing_key, id_goods_foreing_key) VALUES (65, '2222-12-12', 1, 2, 10);
+
+DELETE FROM purveyor_storage_goods WHERE id_purveyor_storage_goods=11;
 
 SELECT * FROM purveyor_storage_goods;
 
@@ -111,8 +135,13 @@ CREATE TABLE department(
 INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Головные уборы', 1);
 INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Женская обувь', 2);
 INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Мужская обувь', 2);
+INSERT INTO department(name_department, fk_id_shoe_store) VALUES (' ', 3);
+
+/*Обновить значение переменной(исправление опечатки)*/
+UPDATE department  SET name_department = 'Аксессуары' WHERE id_department =4;
 
 SELECT * FROM department;
+
 
 CREATE TABLE department_goods (
   count INT NOT NULL,
@@ -159,8 +188,12 @@ INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_
 INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('8:00', '18:00', 'Четверг', 2);
 INSERT INTO working_mode(start_time, end_time, days_of_the_week, forkey_id_shoe_store) VALUES ('8:00', '18:00', 'Суббота', 2);
 
+/*Обновить значение переменных(изменение времени окончания работы магазина и дня недели, в который он открыт)*/
+UPDATE working_mode  SET end_time = '17:30', days_of_the_week = 'Пятница'  WHERE id_working_mode =5;
+
 SELECT * FROM working_mode;
 
+/*
 CREATE TABLE staff(
   id_staff INT NOT NULL AUTO_INCREMENT,
   post VARCHAR(100) NOT NULL,
@@ -381,9 +414,7 @@ SELECT * FROM goods_promotion;
 
 
 
-
-
-
+*/
 
 
 
