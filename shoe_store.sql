@@ -35,6 +35,7 @@ SELECT * FROM goods ORDER BY receipt_date;
 /*Сортировка по цене(от меньшего к большему)*/
 SELECT * FROM goods ORDER BY price;
 
+SELECT DISTINCT name_goods,receipt_date, price FROM goods ORDER BY name_goods,receipt_date, price;
 
 CREATE TABLE purveyor (
   id_purveyor INT NOT NULL AUTO_INCREMENT,
@@ -53,6 +54,7 @@ INSERT INTO purveyor(name_purveyor, address_purveyor, contact_person_purveyor) V
 
 /*Обновить значение переменной(исправление опечатки)*/
 UPDATE purveyor  SET name_purveyor = 'New Balance' WHERE id_purveyor =6;
+DELETE FROM purveyor WHERE id_purveyor>3;
 
 SELECT * FROM purveyor;
 
@@ -69,6 +71,7 @@ INSERT INTO shoe_store(name_shoe_store, address_shoe_store) VALUES ('GoldCross',
 
 /*Обновить значение переменной(исправление опечатки)*/
 UPDATE shoe_store  SET address_shoe_store = 'ул. им. Землячки, 110Б, Волгоград, Волгоградская обл., 400138' WHERE id_shoe_store =3;
+DELETE FROM shoe_store WHERE id_shoe_store=3;
 
 SELECT * FROM shoe_store;
 
@@ -135,7 +138,7 @@ CREATE TABLE department(
 INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Головные уборы', 1);
 INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Женская обувь', 2);
 INSERT INTO department(name_department, fk_id_shoe_store) VALUES ('Мужская обувь', 2);
-INSERT INTO department(name_department, fk_id_shoe_store) VALUES (' ', 3);
+INSERT INTO department(name_department, fk_id_shoe_store) VALUES (' ', 1);
 
 /*Обновить значение переменной(исправление опечатки)*/
 UPDATE department  SET name_department = 'Аксессуары' WHERE id_department =4;
@@ -167,6 +170,8 @@ INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (11, 3,
 INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (2, 1, 7);
 INSERT INTO department_goods(count, fk_id_department,fk_id_goods) VALUES (7, 3, 9);
 
+DELETE FROM department_goods WHERE fk_id_goods>5;
+
 SELECT * FROM department_goods;
 
 CREATE TABLE working_mode (
@@ -193,7 +198,7 @@ UPDATE working_mode  SET end_time = '17:30', days_of_the_week = 'Пятница'
 
 SELECT * FROM working_mode;
 
-/*
+
 CREATE TABLE staff(
   id_staff INT NOT NULL AUTO_INCREMENT,
   post VARCHAR(100) NOT NULL,
@@ -209,9 +214,13 @@ CREATE TABLE staff(
     
 INSERT INTO staff(post, standing, full_name, wage, fore_id_department_) VALUES ('продавец-консультант','1,5 года',  'Петрова Дарья Васильевна', 25000, 1);
 INSERT INTO staff(post, standing,full_name,wage, fore_id_department_) VALUES ( 'продавец','3  года', 'Иванов Иван Иванович', 50000, 2);
+INSERT INTO staff(post, standing,full_name,wage, fore_id_department_) VALUES ( 'грузчик','3  года', 'Иванов Иван Иванович', 20000, 2);
+  
+DELETE FROM staff WHERE fore_id_department_ =1;   
     
 SELECT * FROM staff;    
-    
+
+ /*   
 CREATE TABLE customer (
   id_customer INT NOT NULL AUTO_INCREMENT,
   full_name VARCHAR(45) NOT NULL,
