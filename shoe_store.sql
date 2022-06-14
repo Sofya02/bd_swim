@@ -215,12 +215,14 @@ CREATE TABLE staff(
 INSERT INTO staff(post, standing, full_name, wage, fore_id_department_) VALUES ('продавец-консультант','1,5 года',  'Петрова Дарья Васильевна', 25000, 1);
 INSERT INTO staff(post, standing,full_name,wage, fore_id_department_) VALUES ( 'продавец','3  года', 'Иванов Иван Иванович', 50000, 2);
 INSERT INTO staff(post, standing,full_name,wage, fore_id_department_) VALUES ( 'грузчик','3  года', 'Иванов Иван Иванович', 20000, 2);
+
+SELECT DISTINCT post,full_name FROM staff ORDER BY post,full_name;
   
 DELETE FROM staff WHERE fore_id_department_ =1;   
     
 SELECT * FROM staff;    
 
- /*   
+ 
 CREATE TABLE customer (
   id_customer INT NOT NULL AUTO_INCREMENT,
   full_name VARCHAR(45) NOT NULL,
@@ -234,7 +236,10 @@ INSERT INTO customer(full_name, residential_address, phone_number, email) VALUES
 INSERT INTO customer(full_name, residential_address, phone_number, email) VALUES ('Макарова Светлана Игоревна', '678321, г.Волгоград, ул.Титова 96,53г', 89037398431, 'sveta_mak@gmail.com');
 INSERT INTO customer(full_name, residential_address, phone_number, email) VALUES ('Иванов Иван Иванович', '563221, г.Волгоград, ул. Ломоносова 14,38а', 89456849120, 'ivanka_vol@yandex.ru');
 
+SELECT DISTINCT full_name,email FROM customer ORDER BY full_name,email;
+
 SELECT * FROM customer;
+
 
 CREATE TABLE order_ (
   id_order INT NOT NULL AUTO_INCREMENT,
@@ -422,8 +427,6 @@ INSERT INTO goods_promotion(id_goods_fkey, id_promotion_fkey) VALUES (4, 2);
 SELECT * FROM goods_promotion;
 
 
-
-*/
 
 
 
