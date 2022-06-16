@@ -59,25 +59,23 @@ SELECT fk_id_department, GROUP_CONCAT(count) as info_deprtment_goods FROM depart
 WITH cte_goods(name_goods, receipt_date, price) AS (SELECT name_goods, receipt_date, price FROM goods) SELECT * FROM cte_goods;
 WITH cte_working_mode(start_time, days_of_the_week, forkey_id_shoe_store) AS (SELECT start_time, days_of_the_week, forkey_id_shoe_store FROM working_mode) SELECT * FROM cte_working_mode;
 WITH cte_staff(full_name, wage) AS (SELECT full_name, wage FROM staff) SELECT * FROM cte_staff;
-
 /*Выбирает (SELECT) ВСЕ (*) записи из (FROM) таблицы goods и сортирует их (ORDER BY) по полю receipt_date в порядке возрастания, лимит (LIMIT) первые 5 записей.*/
 SELECT * FROM goods ORDER BY receipt_date LIMIT 5;
 /*Выбирает (SELECT) ВСЕ (*) записи из (FROM) таблицы purveyor_storage_goods и сортирует их (ORDER BY) по полю count в порядке возрастания, лимит (LIMIT) 8 записей, начиная с 2.*/
 SELECT * FROM purveyor_storage_goods ORDER BY count LIMIT 2,8;
 /*Выбирает (SELECT) ВСЕ (*) записи из (FROM) таблицы value_characteristics_goods и сортирует их (ORDER BY) по полю id_value_characteristics_goods в порядке возрастания, лимит (LIMIT) 15 записей, начиная с 5.*/
 SELECT * FROM value_characteristics_goods ORDER BY id_value_characteristics_goods LIMIT 5,15;
-
 SELECT id_department, name_department,fk_id_shoe_store FROM department INNER JOIN department_goods ON id_department = fk_id_department;
 SELECT id_goods, name_goods,brand FROM goods INNER JOIN value_goods ON id_goods = id_fk_goods;
 SELECT id_goods, name_goods,goods_type, brand FROM goods INNER JOIN promotion ON goods_type = goods_category;
-
 SELECT id_promotion, amount_of_discount,goods_category FROM promotion LEFT OUTER JOIN goods_promotion ON id_promotion = id_promotion_fkey;
 SELECT id_goods, name_goods, goods_type FROM goods RIGHT OUTER JOIN promotion ON goods_type = goods_category WHERE brand='Nike';
 SELECT id_department, name_department, fk_id_shoe_store FROM department FULL INNER JOIN staff ON id_department = fore_id_department_ ;
-
 SELECT id_department, name_department, fk_id_shoe_store FROM department CROSS JOIN staff ON id_department = fore_id_department_ ;
-
-
+SELECT id_customer, order_date, id_staff FROM order_ CROSS JOIN goods_return ;
+SELECT name_goods, price, id_fk_value_characteristicks FROM goods CROSS JOIN value_goods ON id_goods = id_fk_goods;
+SELECT name_goods, goods_type FROM goods NATURAL JOIN goods_promotion WHERE id_goods=id_goods_fkey;
+SELECT name_goods, receipt_date, price FROM goods NATURAL JOIN comment_ WHERE id_goods=foreign_key_id_goods;
 
 CREATE TABLE charect_goods
 (
