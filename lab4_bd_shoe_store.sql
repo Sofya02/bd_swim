@@ -1,41 +1,55 @@
 USE `sh_st` ;
 
-UPDATE goods  SET brand = 'Addidas' WHERE id_goods =11;
+UPDATE goods  SET brand = 'Puma' WHERE id_goods =11;
 UPDATE purveyor  SET name_purveyor = 'New Balance' WHERE id_purveyor =6;
 UPDATE shoe_store  SET address_shoe_store = 'ул. им. Землячки, 110Б, Волгоград, Волгоградская обл., 400138' WHERE id_shoe_store =3;
 UPDATE working_mode  SET end_time = '17:30', days_of_the_week = 'Пятница'  WHERE id_working_mode =5;
 UPDATE department  SET name_department = 'Аксессуары' WHERE id_department =4;
-
-
 DELETE FROM goods WHERE id_goods=12;
 DELETE FROM purveyor WHERE id_purveyor>3;
 DELETE FROM department_goods WHERE fk_id_goods>5;
 DELETE FROM staff WHERE fore_id_department_ =3; 
 DELETE FROM shoe_store WHERE id_shoe_store=3;
 DELETE FROM purveyor_storage_goods WHERE id_purveyor_storage_goods=11;
-
-
 SELECT * FROM goods ORDER BY receipt_date;
 SELECT * FROM goods ORDER BY price;
-
-
+SELECT * FROM goods  GROUP BY goods_type ORDER BY price;
 SELECT DISTINCT name_goods,receipt_date, price FROM goods ORDER BY name_goods,receipt_date, price;
 SELECT DISTINCT full_name,email FROM customer ORDER BY full_name,email;
 SELECT DISTINCT post,full_name FROM staff ORDER BY post,full_name;
-
-
+SELECT DISTINCT name_purveyor,contact_person_purveyor FROM purveyor ORDER BY name_purveyor,contact_person_purveyor;
+SELECT DISTINCT count,id_storage_foreing_key FROM purveyor_storage_goods ORDER BY count,id_storage_foreing_key;
 SELECT * FROM goods WHERE price BETWEEN 3000 AND 10000;
 SELECT * FROM purveyor_storage_goods WHERE data_ BETWEEN '2018-12-12' AND '2020-12-12';
 SELECT * FROM working_mode WHERE days_of_the_week BETWEEN 'Вторник' AND 'Пятница';
 SELECT * FROM value_characteristics_goods WHERE name_ BETWEEN '39' AND '44';
-
-
+SELECT * FROM value_goods WHERE id_fk_goods BETWEEN 5 AND 7;
 SELECT * FROM goods WHERE name_goods LIKE 'Кр%';
 SELECT * FROM purveyor WHERE address_purveyor LIKE 'пр%';
 SELECT * FROM purveyor_storage_goods WHERE count LIKE '16%';
 SELECT * FROM staff WHERE full_name LIKE 'Ив%';
 SELECT * FROM value_characteristics_goods WHERE id_value_characteristics_goods LIKE '1%';
-
+SELECT * FROM customer WHERE phone_number LIKE '894%';
 SELECT * FROM goods WHERE brand NOT IN ('Adidas','Kappa');
 SELECT * FROM purveyor_storage_goods WHERE data_ NOT IN ('2020-12-12');
+SELECT * FROM department WHERE fk_id_shoe_store NOT IN (1);
+SELECT * FROM goods WHERE brand IN ('Adidas', 'Nike');
+SELECT * FROM purveyor_storage_goods WHERE id_storage_foreing_key IN (1, 3);
+SELECT * FROM value_goods WHERE id_fk_goods IN (3, 10);
+INSERT INTO some_goods (id_goods, receipt_date, price) SELECT id_goods, receipt_date, price FROM goods WHERE brand='Nike';
+INSERT INTO charect_goods ( name_) SELECT ( name_) FROM value_characteristics_goods WHERE id_value_characteristics_goods=5;
+SELECT name_goods, SUM(price) as sum FROM goods WHERE brand = 'Kappa' GROUP BY name_goods;
+SELECT name_goods, MAX(price) as max FROM goods WHERE goods_type = 'Мужская обувь' GROUP BY name_goods;
+SELECT goods_type, MAX(price) as max FROM goods WHERE brand ='Adidas' GROUP BY goods_type  HAVING max>=4500;
+SELECT fore_id_department_, SUM(wage) as sum FROM staff WHERE fore_id_department_ =2 GROUP BY fore_id_department_  HAVING sum; 
+SELECT id_storage_foreing_key, SUM(count) as sum FROM purveyor_storage_goods GROUP BY id_storage_foreing_key  HAVING sum; 
+SELECT goods_type, COUNT(*) AS count FROM goods GROUP BY goods_type;
+SELECT receipt_date, COUNT(*) AS count FROM goods GROUP BY goods_type ;
+SELECT id_storage_foreing_key, COUNT(*) AS count FROM purveyor_storage_goods GROUP BY id_purveyor_foreing_key ;
+SELECT id_storage_foreing_key, COUNT(*) AS count FROM purveyor_storage_goods GROUP BY count;
+SELECT goods_type,brand, AVG(price) AS average_revenue_per_sale FROM goods GROUP BY brand;
+SELECT id_purveyor_foreing_key, AVG(count) AS average_revenue_per_sale FROM purveyor_storage_goods GROUP BY id_purveyor_foreing_key;
+SELECT fore_id_department_, AVG(wage) AS average_revenue_per_sale FROM staff GROUP BY fore_id_department_;
+
+
 
