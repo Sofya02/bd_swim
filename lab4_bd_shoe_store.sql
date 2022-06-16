@@ -1,5 +1,5 @@
 USE `sh_st` ;
-
+ 
 UPDATE goods  SET brand = 'Puma' WHERE id_goods =11;
 UPDATE purveyor  SET name_purveyor = 'New Balance' WHERE id_purveyor =6;
 UPDATE shoe_store  SET address_shoe_store = 'ул. им. Землячки, 110Б, Волгоград, Волгоградская обл., 400138' WHERE id_shoe_store =3;
@@ -36,8 +36,6 @@ SELECT * FROM department WHERE fk_id_shoe_store NOT IN (1);
 SELECT * FROM goods WHERE brand IN ('Adidas', 'Nike');
 SELECT * FROM purveyor_storage_goods WHERE id_storage_foreing_key IN (1, 3);
 SELECT * FROM value_goods WHERE id_fk_goods IN (3, 10);
-INSERT INTO some_goods (id_goods, receipt_date, price) SELECT id_goods, receipt_date, price FROM goods WHERE brand='Nike';
-INSERT INTO charect_goods ( name_) SELECT ( name_) FROM value_characteristics_goods WHERE id_value_characteristics_goods=5;
 SELECT name_goods, SUM(price) as sum FROM goods WHERE brand = 'Kappa' GROUP BY name_goods;
 SELECT name_goods, MAX(price) as max FROM goods WHERE goods_type = 'Мужская обувь' GROUP BY name_goods;
 SELECT goods_type, MAX(price) as max FROM goods WHERE brand ='Adidas' GROUP BY goods_type  HAVING max>=4500;
@@ -53,29 +51,14 @@ SELECT fore_id_department_, AVG(wage) AS average_revenue_per_sale FROM staff GRO
 SELECT id_goods, brand FROM goods UNION ALL SELECT id_customer, full_name FROM customer;
 SELECT id_department, fk_id_shoe_store FROM department UNION ALL SELECT id_order, id_staff FROM order_;
 SELECT id_working_mode,days_of_the_week FROM working_mode UNION ALL SELECT id_staff, full_name  FROM staff;  
-/*ЗАПРОСЫ, УКАЗАННЫЕ В ФУНКЦИОНАЛЬНЫХ ТРЕБОВАНИЯХ 10 ШТ*/
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /*62*/
 SELECT brand, GROUP_CONCAT(name_goods) as what_bran FROM goods GROUP BY brand;
 SELECT goods_type, GROUP_CONCAT(name_goods) as what_type FROM goods GROUP BY goods_type;
 SELECT GROUP_CONCAT(name_purveyor) as info_purveyor FROM purveyor;
 SELECT count, GROUP_CONCAT(data_) as info_purveyor_storage_goods FROM purveyor_storage_goods GROUP BY count;
 SELECT fk_id_department, GROUP_CONCAT(count) as info_deprtment_goods FROM department_goods GROUP BY fk_id_department;
-/*67*/
-
 WITH cte_goods(name_goods, receipt_date, price) AS (SELECT name_goods, receipt_date, price FROM goods) SELECT * FROM cte_goods;
 WITH cte_working_mode(start_time, days_of_the_week, forkey_id_shoe_store) AS (SELECT start_time, days_of_the_week, forkey_id_shoe_store FROM working_mode) SELECT * FROM cte_working_mode;
 WITH cte_staff(full_name, wage) AS (SELECT full_name, wage FROM staff) SELECT * FROM cte_staff;
-/*70*/
 
 /*Выбирает (SELECT) ВСЕ (*) записи из (FROM) таблицы goods и сортирует их (ORDER BY) по полю receipt_date в порядке возрастания, лимит (LIMIT) первые 5 записей.*/
 SELECT * FROM goods ORDER BY receipt_date LIMIT 5;
@@ -83,10 +66,17 @@ SELECT * FROM goods ORDER BY receipt_date LIMIT 5;
 SELECT * FROM purveyor_storage_goods ORDER BY count LIMIT 2,8;
 /*Выбирает (SELECT) ВСЕ (*) записи из (FROM) таблицы value_characteristics_goods и сортирует их (ORDER BY) по полю id_value_characteristics_goods в порядке возрастания, лимит (LIMIT) 15 записей, начиная с 5.*/
 SELECT * FROM value_characteristics_goods ORDER BY id_value_characteristics_goods LIMIT 5,15;
-/*73*/
 
+SELECT id_department, name_department,fk_id_shoe_store FROM department INNER JOIN department_goods ON id_department = fk_id_department;
+SELECT id_goods, name_goods,brand FROM goods INNER JOIN value_goods ON id_goods = id_fk_goods;
+SELECT id_goods, name_goods,goods_type, brand FROM goods INNER JOIN promotion ON goods_type = goods_category;
 
-/*JOIN: INNER, OUTER (LEFT, RIGHT, FULL), CROSS, NATURAL, разных, в различных вариациях, несколько запросов с более, чем одним JOIN (15 шт.+)*/
+SELECT id_promotion, amount_of_discount,goods_category FROM promotion LEFT OUTER JOIN goods_promotion ON id_promotion = id_promotion_fkey;
+SELECT id_goods, name_goods, goods_type FROM goods RIGHT OUTER JOIN promotion ON goods_type = goods_category WHERE brand='Nike';
+SELECT id_department, name_department, fk_id_shoe_store FROM department FULL INNER JOIN staff ON id_department = fore_id_department_ ;
+
+SELECT id_department, name_department, fk_id_shoe_store FROM department CROSS JOIN staff ON id_department = fore_id_department_ ;
+
 
 
 CREATE TABLE charect_goods
@@ -102,4 +92,5 @@ CREATE TABLE some_goods
 );
 
 
-
+INSERT INTO some_goods (id_goods, receipt_date, price) SELECT id_goods, receipt_date, price FROM goods WHERE brand='Nike';
+INSERT INTO charect_goods ( name_) SELECT ( name_) FROM value_characteristics_goods WHERE id_value_characteristics_goods=5;
