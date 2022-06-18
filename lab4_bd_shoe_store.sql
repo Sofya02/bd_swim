@@ -143,16 +143,15 @@ SELECT *, DATE_FORMAT(receipt_date, '%d.%m.%Y') as new_receipt_date FROM goods;
 SELECT *,TIME_FORMAT(start_time, end_time, '%Hч %iм %sс') as new_start_time;
 /*14.Сложные запросы, входящие в большинство групп выше, т.е. SELECT ... JOIN ... JOIN ... WHERE ... GROUP BY ... ORDER BY ... LIMIT ...; (5-7 шт. +)*/
 /*Для заданного покупателя по имени за промежуток дат вывести все товары, которые он купил и в каком количестве и если есть возврат отобразить*/
-
+SELECT GROUP_CONCAT(name_goods,' - ', count) AS good_count FROM goods  INNER JOIN order_  INNER JOIN goods_order ON id_goods = fk_id_goods_ AND id_order = fk_id_order_ INNER JOIN goods_return  ORDER BY id_customer;
 
 /*Вывести топ три товара по средней оценке комментариев*/
-SELECT name_goods, receipt_date, price, AVG(grade) FROM goods 
-INNER JOIN comment_ ON id_goods = foreign_key_id_goods;
+SELECT name_goods, ARG(grade) as sr_grade FROM goods 
+INNER JOIN comment_ ON id_goods = foreign_key_id_goods WHERE grade>3;
 
 /*Вывести сумму сколько заданный поставщик отгразул товаров на склады заданного магазина*/
 SELECT id_purveyor_foreing_key, SUM(count) as sum, id_storage_foreing_key FROM purveyor_storage_goods 
 GROUP BY id_purveyor_foreing_key, id_storage_foreing_key; 
-
 
 
 
