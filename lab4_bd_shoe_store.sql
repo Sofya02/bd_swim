@@ -42,7 +42,7 @@ SELECT * FROM goods WHERE receipt_date='2021-01-12';
 SELECT * FROM staff WHERE fore_id_department_=2;
 SELECT DISTINCT name_goods,receipt_date, price FROM goods ORDER BY name_goods,receipt_date, price;
 SELECT DISTINCT full_name,email FROM customer ORDER BY full_name,email;
-SELECT DISTINCT post,full_name FROM staff ORDER BY post,full_name;
+SELECT DISTINCT post,full_name FROM staff GROUP BY fore_id_department_;
 SELECT DISTINCT name_purveyor,contact_person_purveyor FROM purveyor ORDER BY name_purveyor,contact_person_purveyor;
 SELECT DISTINCT count,id_storage_foreing_key FROM purveyor_storage_goods ORDER BY count,id_storage_foreing_key;
 SELECT * FROM goods WHERE brand NOT IN ('Adidas','Kappa');
@@ -61,7 +61,11 @@ SELECT * FROM goods WHERE name_goods LIKE 'Кр%';
 SELECT * FROM purveyor WHERE address_purveyor LIKE 'пр%';
 SELECT * FROM purveyor_storage_goods WHERE count LIKE '16%';
 SELECT * FROM staff WHERE full_name LIKE 'Ив%';
-SELECT * FROM value_characteristics_goods WHERE id_value_characteristics_goods LIKE '1%';
+
+SELECT id_goods_characteristics_f_k, id_value_characteristics_goods, name_w, name_ FROM value_characteristics_goods 
+INNER JOIN goods_characteristics ON id_goods_characteristics = id_goods_characteristics_f_k 
+WHERE name_ LIKE '3%';
+
 SELECT * FROM customer WHERE phone_number LIKE '894%';  
 /*6.SELECT INTO или INSERT SELECT, что поддерживается СУБД (2-3 шт.). */
 CREATE TABLE new_goods (
@@ -94,11 +98,11 @@ SELECT id_department, name_department, fk_id_shoe_store FROM department FULL INN
 SELECT id_department, name_department, fk_id_shoe_store FROM department CROSS JOIN staff ON id_department = fore_id_department_ ;
 SELECT id_customer_f_K, order_date, id_staff_f_k FROM order_ CROSS JOIN goods_return ;
 SELECT name_goods, price, id_fk_value_characteristicks FROM goods CROSS JOIN value_goods ON id_goods = id_fk_goods;
-SELECT name_goods,brand, goods_type FROM goods NATURAL JOIN goods_promotion WHERE brand='Adidas';
+SELECT name_goods,brand, goods_type FROM goods INNER JOIN goods_promotion ON id_goods = id_goods_fkey INNER JOIN promotion ON id_promotion = id_promotion_fkey GROUP BY goods_category;
 SELECT name_goods, receipt_date, price FROM goods NATURAL JOIN comment_ WHERE id_goods=foreign_key_id_goods;
 /*8.	GROUP BY (некоторые с HAVING), с LIMIT, ORDER BY (ASC|DESC) вместе с COUNT, MAX, MIN, SUM, AVG в различных вариациях, можно по отдельности (15 шт.+)*/
 SELECT name_goods, SUM(price) as sum FROM goods WHERE brand = 'Kappa' GROUP BY name_goods;
-SELECT name_goods, MAX(price) as max FROM goods WHERE goods_type = 'Мужская обувь' GROUP BY name_goods;
+SELECT name_goods, MAX(price) as max FROM goods WHERE goods_type = 'Мужская обувь';
 SELECT goods_type, MAX(price) as max FROM goods WHERE brand ='Adidas' GROUP BY goods_type  HAVING max>=4500;
 SELECT fore_id_department_, SUM(wage) as sum FROM staff WHERE fore_id_department_ =2 GROUP BY fore_id_department_  HAVING sum; 
 SELECT id_storage_foreing_key, SUM(count) as sum FROM purveyor_storage_goods GROUP BY id_storage_foreing_key  HAVING sum; 
@@ -142,6 +146,16 @@ SELECT UPPER(post) FROM staff;
 SELECT *, DATE_FORMAT(receipt_date, '%d.%m.%Y') as new_receipt_date FROM goods;
 SELECT name_goods, receipt_date, MONTHNAME(receipt_date) FROM goods;
 /*14.Сложные запросы, входящие в большинство групп выше, т.е. SELECT ... JOIN ... JOIN ... WHERE ... GROUP BY ... ORDER BY ... LIMIT ...; (5-7 шт. +)*/
+SELECT name_goods, receipt_date, price, grade FROM goods 
+INNER JOIN comment_ ON id_goods=foreign_key_id_goods WHERE grade=5;
+
+SELECT full_name, name_goods, receipt_date, price FROM customer 
+INNER JOIN order_ ON id_customer = id_customer_f_K 
+INNER JOIN goods_order ON id_order = fk_id_order_
+INNER JOIN goods ON id_goods = fk_id_goods_
+WHERE count >1;
+;
+
 /*Для заданного покупателя по имени за промежуток дат вывести все товары, которые он купил и в каком количестве и если есть возврат отобразить*/ 
  SELECT id_customer_f_K, name_goods, count, id_order_f_k AS return_id FROM order_
  INNER JOIN goods_order ON id_order = fk_id_order_
