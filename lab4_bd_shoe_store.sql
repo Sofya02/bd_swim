@@ -150,8 +150,11 @@ SELECT name_goods, receipt_date, MONTHNAME(receipt_date) FROM goods;
 GROUP BY id_customer_f_K ;
 
 /*Вывести топ три товара по средней оценке комментариев*/
-/**/SELECT name_goods, AVG(grade) as sr_grade FROM goods 
-INNER JOIN comment_ ON id_goods = foreign_key_id_goods WHERE grade>3;
+SELECT name_goods, grade FROM goods
+INNER JOIN comment_ ON id_goods = foreign_key_id_goods  
+WHERE grade=(SELECT AVG(grade) FROM goods) 
+ORDER BY grade  
+DESC LIMIT 3  ;
 
 /*Вывести сумму сколько заданный поставщик отгразул товаров на склады заданного магазина*/
 SELECT id_purveyor_foreing_key, SUM(count) AS sum, id_storage_foreing_key FROM purveyor_storage_goods 
