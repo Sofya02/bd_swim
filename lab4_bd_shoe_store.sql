@@ -3,7 +3,7 @@ USE `sh_st` ;
 /*1.	Запросы, которые вы указали в функциональных требованиях (в заголовке указать, что за требование) (10 шт. +)*/
  /*Аналитические запросы:*/
 /*1.	 Показать количество возвращенных заказов за последний месяц.*/
-SELECT id_order, return_data FROM goods_return WHERE MONTH(return_data) = MONTH(DATE_ADD(NOW(), INTERVAL 0 MONTH));
+SELECT id_order_f_k, return_data FROM goods_return WHERE MONTH(return_data) = MONTH(DATE_ADD(NOW(), INTERVAL 0 MONTH));
 /*2.	 Показать общую выручку с заказов за 1 год.*/
 SELECT SUM(fk_id_goods_*count*price)-SUM(id_order*price) FROM goods INNER JOIN order_ INNER JOIN goods_order ON id_order=fk_id_order_ AND id_goods = fk_id_goods_ WHERE (YEAR(order_date)-YEAR(CURDATE()<1));
 /*3.	 Вычислить самый распространённый товар за полгода.*/
@@ -92,7 +92,7 @@ SELECT id_promotion, amount_of_discount,goods_category FROM promotion LEFT OUTER
 SELECT id_goods, name_goods, goods_type FROM goods RIGHT OUTER JOIN promotion ON goods_type = goods_category WHERE brand='Nike';
 SELECT id_department, name_department, fk_id_shoe_store FROM department FULL INNER JOIN staff ON id_department = fore_id_department_ ;
 SELECT id_department, name_department, fk_id_shoe_store FROM department CROSS JOIN staff ON id_department = fore_id_department_ ;
-SELECT id_customer, order_date, id_staff FROM order_ CROSS JOIN goods_return ;
+SELECT id_customer_f_K, order_date, id_staff_f_k FROM order_ CROSS JOIN goods_return ;
 SELECT name_goods, price, id_fk_value_characteristicks FROM goods CROSS JOIN value_goods ON id_goods = id_fk_goods;
 SELECT name_goods,brand, goods_type FROM goods NATURAL JOIN goods_promotion WHERE brand='Adidas';
 SELECT name_goods, receipt_date, price FROM goods NATURAL JOIN comment_ WHERE id_goods=foreign_key_id_goods;
@@ -118,7 +118,7 @@ SELECT * FROM value_characteristics_goods ORDER BY id_value_characteristics_good
 SELECT * FROM goods  GROUP BY goods_type ORDER BY price;
 /*9.UNION, EXCEPT, INTERSECT, что поддерживается СУБД (3-5 шт.)*/
 SELECT id_goods, brand FROM goods UNION ALL SELECT id_customer, full_name FROM customer;
-SELECT id_department, fk_id_shoe_store FROM department UNION ALL SELECT id_order, id_staff FROM order_;
+SELECT id_department, fk_id_shoe_store FROM department UNION ALL SELECT id_order, id_staff_f_k FROM order_;
 SELECT id_working_mode,days_of_the_week FROM working_mode UNION ALL SELECT id_staff, full_name  FROM staff; 
 /*10.Вложенные SELECT с GROUP BY, ALL, ANY, EXISTS (3-5 шт.)*/
 SELECT name_goods, receipt_date, price FROM(SELECT name_goods, receipt_date, price FROM goods WHERE brand = 'Kappa' ) AS list_;
@@ -140,17 +140,21 @@ SELECT CONCAT(name_goods,': ', brand) AS INFO_GOODS FROM goods;
 SELECT CONCAT(start_time,'-',end_time) AS working_time from working_mode;
 SELECT UPPER(post) FROM staff;
 SELECT *, DATE_FORMAT(receipt_date, '%d.%m.%Y') as new_receipt_date FROM goods;
-SELECT *,TIME_FORMAT(start_time, end_time, '%Hч %iм %sс') as new_start_time;
+SELECT name_goods, receipt_date, MONTHNAME(receipt_date) FROM goods;
 /*14.Сложные запросы, входящие в большинство групп выше, т.е. SELECT ... JOIN ... JOIN ... WHERE ... GROUP BY ... ORDER BY ... LIMIT ...; (5-7 шт. +)*/
-/*Для заданного покупателя по имени за промежуток дат вывести все товары, которые он купил и в каком количестве и если есть возврат отобразить*/
-SELECT GROUP_CONCAT(name_goods,' - ', count) AS good_count FROM goods  INNER JOIN order_  INNER JOIN goods_order ON id_goods = fk_id_goods_ AND id_order = fk_id_order_ INNER JOIN goods_return  ORDER BY id_customer;
+/*Для заданного покупателя по имени за промежуток дат вывести все товары, которые он купил и в каком количестве и если есть возврат отобразить*/ 
+ SELECT id_customer_f_K, name_goods, count, id_order_f_k AS return_id FROM order_
+ INNER JOIN goods_order ON id_order = fk_id_order_
+ INNER JOIN goods ON id_goods = fk_id_goods_
+ INNER JOIN goods_return ON fk_id_order_ = id_order_f_k WHERE order_date IN('2022-02-01', '2022-03-20')
+GROUP BY id_customer_f_K ;
 
 /*Вывести топ три товара по средней оценке комментариев*/
-SELECT name_goods, ARG(grade) as sr_grade FROM goods 
+/**/SELECT name_goods, AVG(grade) as sr_grade FROM goods 
 INNER JOIN comment_ ON id_goods = foreign_key_id_goods WHERE grade>3;
 
 /*Вывести сумму сколько заданный поставщик отгразул товаров на склады заданного магазина*/
-SELECT id_purveyor_foreing_key, SUM(count) as sum, id_storage_foreing_key FROM purveyor_storage_goods 
+SELECT id_purveyor_foreing_key, SUM(count) AS sum, id_storage_foreing_key FROM purveyor_storage_goods 
 GROUP BY id_purveyor_foreing_key, id_storage_foreing_key; 
 
 
