@@ -1,28 +1,62 @@
 USE `sh_st` ;
 
 /*ФУНКЦИИ*/
-/*Функция выводит название товара и дату его поставки, а такжк информацию о скидках*/
-SELECT name_goods, receipt_date, 
-CASE
-    WHEN brand = 'Adidas'
-        THEN 'Скидка с 15 июля 15 %'
-    WHEN brand = 'Nike'
-        THEN 'Скидка с 20 июля 10 %'
-    ELSE 'Cкидок не ожидается'
-END AS discount
-FROM goods;
-
+/*Если текущая дата меньше даты поставки товара, мы возвращаем «Нет», иначе мы возвращаем «Да».*/
+DROP FUNCTION IF EXISTS goods_receipt_date;
+DELIMITER |
+CREATE FUNCTION goods_receipt_date (receipt_date DATE)
+  RETURNS VARCHAR(3)
+   DETERMINISTIC
+    BEGIN
+     DECLARE sf_value VARCHAR(3);
+        IF curdate() > receipt_date
+            THEN SET sf_value = 'Yes';
+        ELSEIF  curdate() <= receipt_date
+            THEN SET sf_value = 'No';
+        END IF;
+     RETURN sf_value;
+    END|
+    DELIMITER ;
+SELECT id_goods,name_goods,receipt_date,CURDATE() ,sf_past_movie_return_date(`receipt_date`)FROM goods;
+    
 /*Функция показывает информацию о том, нужно ли закупать товар или нет*/
-SELECT name_goods, count, data_, id_goods_foreing_key,
-    IF(count > 50, 'Закуп не требуется', 'Требуется закупить новый товар')
-FROM purveyor_storage_goods 
+DROP FUNCTION IF EXISTS goods_buy;
+DELIMITER |
+CREATE FUNCTION goods_buy (count INT)
+  RETURNS VARCHAR(50)
+   DETERMINISTIC
+    BEGIN
+     DECLARE sf_value VARCHAR(50);
+        IF count > 50
+            THEN SET sf_value = 'Закуп не требуется';
+        ELSEIF  50 <= count
+            THEN SET sf_value = 'Требуется закупить новый товар';
+        END IF;
+     RETURN sf_value;
+    END|
+    DELIMITER ;
+SELECT name_goods, count, data_, id_goods_foreing_key,  goods_buy (count) FROM purveyor_storage_goods 
 INNER JOIN goods ON id_goods = id_goods_foreing_key GROUP BY name_goods;
 
 /*Функция выводит информацию о комментарии конкретного пользователя*/
-SELECT full_name, name_goods, grade,
-        IFNULL(text_, 'не определено') AS comments
-FROM comment_ INNER JOIN customer ON id_customer = foreign_key_id_customer
-INNER JOIN goods ON id_goods = foreign_key_id_goods GROUP BY id_customer;
+DROP FUNCTION IF EXISTS goods_prom;
+DELIMITER |
+CREATE FUNCTION goods_prom (text_ VARCHAR(200))
+  RETURNS VARCHAR(50)
+   DETERMINISTIC
+    BEGIN
+     DECLARE sf_value VARCHAR(50);
+        IF text_ = ''
+            THEN SET sf_value = 'не определено';
+        ELSEIF  text_!=''
+            THEN SET sf_value = text_;
+        END IF;
+     RETURN sf_value;
+    END|
+    DELIMITER ;
+SELECT full_name, name_goods, grade, goods_prom (text_)
+FROM comment_ RIGHT JOIN customer ON id_customer = foreign_key_id_customer
+LEFT JOIN goods ON id_goods = foreign_key_id_goods GROUP BY id_customer;
 
 
 /*ПРОЦЕДУРЫ*/
@@ -36,6 +70,7 @@ BEGIN
 END$$
 DELIMITER ;
 CALL InfoGoods();
+DROP PROCEDURE InfoGoods;
 /*Процедура выводит информацию о том, сколько конкретный поставщик отгрузил своего товара в определенный склад*/
 DELIMITER $$
 CREATE PROCEDURE sum_goods_to_storage()
@@ -45,6 +80,7 @@ GROUP BY id_purveyor_foreing_key, id_storage_foreing_key;
 END$$
 DELIMITER ;
 CALL sum_goods_to_storage();
+DROP PROCEDURE sum_goods_to_storage;
 /*Процедура выводит информацию, о возвращенном товаре бренда Nike*/
 DELIMITER $$
 CREATE PROCEDURE goods_pr()
@@ -56,6 +92,6 @@ WHERE brand='Nike';
 END$$
 DELIMITER ;
 CALL goods_pr();
-
+DROP PROCEDURE goods_pr;
 
 
