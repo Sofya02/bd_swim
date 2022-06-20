@@ -157,24 +157,27 @@ WHERE count >1;
 ;
 
 /*Для заданного покупателя по имени за промежуток дат вывести все товары, которые он купил и в каком количестве и если есть возврат отобразить*/ 
- SELECT id_customer_f_K, name_goods, count, id_order_f_k AS return_id FROM order_
+ SELECT id_customer_f_K, name_goods, count, id_order_f_k AS return_id, return_data
+ FROM order_
  INNER JOIN goods_order ON id_order = fk_id_order_
  INNER JOIN goods ON id_goods = fk_id_goods_
- INNER JOIN goods_return ON fk_id_order_ = id_order_f_k WHERE order_date IN('2022-02-01', '2022-03-20')
-GROUP BY id_customer_f_K ;
+ left JOIN goods_return ON fk_id_order_ = id_order_f_k 
+ WHERE order_date BETWEEN '2022-02-01' AND'2022-03-20';
 
 /*Вывести топ три товара по средней оценке комментариев*/
-SELECT name_goods, grade FROM goods
+SELECT GROUP_CONCAT(name_goods), AVG(grade) FROM goods  
 INNER JOIN comment_ ON id_goods = foreign_key_id_goods  
-WHERE grade=(SELECT AVG(grade) FROM goods) 
-ORDER BY grade  
-DESC LIMIT 3  ;
+ORDER BY GROUP_CONCAT(name_goods) LIMIT 3;
 
 /*Вывести сумму сколько заданный поставщик отгразул товаров на склады заданного магазина*/
-SELECT id_purveyor_foreing_key, SUM(count) AS sum, id_storage_foreing_key FROM purveyor_storage_goods 
+SELECT  name_purveyor, SUM(count) AS sum, name_shoe_store
+FROM purveyor_storage_goods 
+INNER JOIN purveyor ON id_purveyor = id_purveyor_foreing_key
+INNER JOIN storage_ ON id_storage = id_storage_foreing_key
+INNER JOIN shoe_store ON id_shoe_store = id_shoe_store_f_kk
+WHERE name_purveyor = 'Nike'
 GROUP BY id_purveyor_foreing_key, id_storage_foreing_key; 
-
-
+;
 
 
 
